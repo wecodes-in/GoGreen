@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Box, Typography, Button, Paper, Grid, TextField, MenuItem, Snackbar, Alert } from "@mui/material";
-import { Link } from "react-router-dom";
-// import donationI÷mage from "images/img1.jpg"; // Example image
 
 const donationOptions = [
   { label: "Plant 1 Tree - ₹50", value: 50 },
