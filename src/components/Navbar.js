@@ -20,7 +20,7 @@ const Navbar = () => {
     <AppBar position="static" sx={{ backgroundColor: "#2E7D32" }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: "bold" }}>
-        Plantify
+        Go Green
         </Typography>
 
         {/* ✅ Desktop Menu: Hidden on small screens (xs), visible on medium (md) and larger */}
