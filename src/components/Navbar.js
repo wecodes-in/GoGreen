@@ -27,8 +27,9 @@ const Navbar = () => {
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: "10px" }}>
           <Button color="inherit" component={Link} to="/" sx={{ fontWeight: "bold" }}>Home</Button>
           <Button color="inherit" component={Link} to="/donate" sx={{ fontWeight: "bold" }}>Donate</Button>
-          <Button color="inherit" component={Link} to="/about" sx={{ fontWeight: "bold" }}>Donate</Button>
           <Button color="inherit" component={Link} to="/tree-tracker" sx={{ fontWeight: "bold" }}>Tree Tracker</Button>
+          <Button color="inherit" component={Link} to="/about" sx={{ fontWeight: "bold" }}>About Us</Button>
+
           {user ? (
             <Button color="inherit" onClick={logout} sx={{ fontWeight: "bold" }}>Logout</Button>
           ) : (
