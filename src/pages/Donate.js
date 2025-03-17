@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Box, Typography, Button, Paper, Grid, TextField, MenuItem, Snackbar, Alert } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Typography, Button, Paper, Grid, TextField, MenuItem, Snackbar, Alert, RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from "@mui/material";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const donationOptions = [
   { label: "Plant 1 Tree - ₹50", value: 50 },
@@ -7,27 +9,72 @@ const donationOptions = [
   { label: "Plant 10 Trees - ₹500", value: 500 },
   { label: "Custom Amount", value: "custom" },
 ];
+const donorTypes = ["Individual", "Corporate", "NGO"];
 
 const Donate = () => {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const [amount, setAmount] = useState(50);
   const [customAmount, setCustomAmount] = useState("");
+  const [donorType, setDonorType] = useState("");
+  const [transactionId, setTransactionId] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState("");
 
-  const handleDonation = () => {
-    setOpenSnackbar(true);
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    const storedUserName = localStorage.getItem("userName");
+
+    if (storedUserId) {
+      setUserId(storedUserId);
+      setUserName(storedUserName);
+    }
+  }, []);
+
+  // ✅ Check form validity whenever a field updates
+  useEffect(() => {
+    const donationAmount = amount === "custom" ? parseInt(customAmount) : amount;
+    setIsFormValid(!!donationAmount && donorType !== "" && transactionId.trim() !== "");
+  }, [amount, customAmount, donorType, transactionId]);
+
+  const handleDonation = async () => {
+    if (!isFormValid) return;
+
+    const donationAmount = amount === "custom" ? parseInt(customAmount) : amount;
+    
+    try {
+      const token = Cookies.get("authToken");
+
+      const response = await axios.post(`${BASE_URL}/donations/donate`, {
+        amount: donationAmount,
+        userId,
+        name: userName,
+        paymentMode: "UPI",
+        donorType,
+        transactionId,
+        message: "Donation for a good cause",
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data) {
+        setSnackbarMessage("🎉 Thank you for your contribution! You are making a difference! 🌳");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      setSnackbarMessage("❌ Something went wrong. Please try again.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+    }
   };
 
   return (
     <Box sx={{ p: 4, textAlign: "center" }}>
-      {/* 🌿 Hero Section */}
-      <Paper sx={{ p: 4, mb: 4, background: `url('images/img1.jpg') center/cover`, color: "white", minHeight: "300px", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-        <Typography variant="h3" fontWeight="bold">🌱 Make a Difference Today</Typography>
-        <Typography variant="h6" sx={{ mt: 1 }}>Every ₹50 plants a tree. Your contribution helps restore forests and combat climate change.</Typography>
-        <Button variant="contained" size="large" color="success" sx={{ mt: 2 }} onClick={() => document.getElementById("donation-form").scrollIntoView({ behavior: "smooth" })}>
-          Donate Now
-        </Button>
-      </Paper>
-
       {/* 🌿 Donation Form */}
       <Paper id="donation-form" sx={{ p: 4, mb: 4 }}>
         <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>🌍 Select Your Donation</Typography>
@@ -47,14 +94,66 @@ const Donate = () => {
           </Grid>
           {amount === "custom" && (
             <Grid item xs={12} sm={6}>
-              <TextField fullWidth label="Enter custom amount" type="number" value={customAmount} onChange={(e) => setCustomAmount(e.target.value)} />
+              <TextField
+                fullWidth
+                label="Enter custom amount"
+                type="number"
+                value={customAmount}
+                onChange={(e) => setCustomAmount(e.target.value)}
+              />
             </Grid>
           )}
         </Grid>
-        <Button variant="contained" color="primary" size="large" sx={{ mt: 3 }} onClick={handleDonation}>
+
+        {/* Donor Type Selection */}
+        <FormControl component="fieldset" sx={{ mt: 3 }}>
+          <FormLabel component="legend">Donor Type (Required)</FormLabel>
+          <RadioGroup row value={donorType} onChange={(e) => setDonorType(e.target.value)}>
+            {donorTypes.map((type) => (
+              <FormControlLabel key={type} value={type} control={<Radio />} label={type} />
+            ))}
+          </RadioGroup>
+        </FormControl>
+
+        {/* Transaction ID Input */}
+        <Grid container spacing={2} justifyContent="center">
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Transaction ID (Required)"
+              value={transactionId}
+              onChange={(e) => setTransactionId(e.target.value)}
+              sx={{ mt: 3 }}
+            />
+          </Grid>
+        </Grid>
+
+        {/* UPI QR Code for Payment */}
+        <Box sx={{ mt: 3, textAlign: "center" }}>
+          <Typography variant="h6" fontWeight="bold">Scan & Pay via UPI</Typography>
+          <img src="assets/qr_code.jpg" alt="UPI QR Code" style={{ width: "200px", marginTop: "10px" }} />
+        </Box>
+
+        {/* 🌳 Confirm Donation Button (Disabled until form is valid) */}
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          sx={{ mt: 3 }}
+          onClick={handleDonation}
+          disabled={!isFormValid} // ✅ Disabled if form is incomplete
+        >
           🌳 Confirm Donation
         </Button>
       </Paper>
+
+      {/* Success Snackbar */}
+      <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={() => setOpenSnackbar(false)}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    
 
       {/* 🌿 Impact Section */}
       <Grid container spacing={3} justifyContent="center">
@@ -72,7 +171,7 @@ const Donate = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <Paper sx={{ p: 3, backgroundColor: "#FFEBEE" }}>
-            <Typography variant="h4" fontWeight="bold" color="red">🏡 500+</Typography>
+            <Typography variant="h4" fontWeight="bold" color="#D98324">🏡 500+</Typography>
             <Typography variant="body1">Communities Benefited</Typography>
           </Paper>
         </Grid>

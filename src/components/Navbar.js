@@ -3,35 +3,67 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } 
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [profileAnchorEl, setProfileAnchorEl] = useState(null);
 
+  // Open Menu
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  // Close Menu
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
+  // Open Profile Menu
+  const handleProfileOpen = (event) => {
+    setProfileAnchorEl(event.currentTarget);
+  };
+
+  // Close Profile Menu
+  const handleProfileClose = () => {
+    setProfileAnchorEl(null);
+  };
+
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#2E7D32" }}>
+    <AppBar position="static" sx={{ backgroundColor: "#2E7D32", padding: "5px 0" }}>
       <Toolbar>
+        {/* Logo / Brand Name */}
         <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: "bold" }}>
-        Go Green
+          Go Green
         </Typography>
 
-        {/* ✅ Desktop Menu: Hidden on small screens (xs), visible on medium (md) and larger */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: "10px" }}>
-          <Button color="inherit" component={Link} to="/" sx={{ fontWeight: "bold" }}>Home</Button>
-          <Button color="inherit" component={Link} to="/donate" sx={{ fontWeight: "bold" }}>Donate</Button>
-          <Button color="inherit" component={Link} to="/tree-tracker" sx={{ fontWeight: "bold" }}>Tree Tracker</Button>
-          <Button color="inherit" component={Link} to="/about" sx={{ fontWeight: "bold" }}>About Us</Button>
+        {/* ✅ Desktop Menu (Visible on md and larger) */}
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: "15px" }}>
+          <Button color="inherit" component={Link} to="/" sx={{ fontWeight: "bold", "&:hover": { backgroundColor: "#1B5E20" } }}>
+            Home
+          </Button>
+          <Button color="inherit" component={Link} to="/donate" sx={{ fontWeight: "bold", "&:hover": { backgroundColor: "#1B5E20" } }}>
+            Donate
+          </Button>
+          <Button color="inherit" component={Link} to="/tree-tracker" sx={{ fontWeight: "bold", "&:hover": { backgroundColor: "#1B5E20" } }}>
+            Tree Tracker
+          </Button>
+          <Button color="inherit" component={Link} to="/about" sx={{ fontWeight: "bold", "&:hover": { backgroundColor: "#1B5E20" } }}>
+            About Us
+          </Button>
 
           {user ? (
-            <Button color="inherit" onClick={logout} sx={{ fontWeight: "bold" }}>Logout</Button>
+            <>
+              {/* Profile Icon */}
+              <IconButton color="inherit" onClick={handleProfileOpen}>
+                <AccountCircleIcon />
+              </IconButton>
+              <Menu anchorEl={profileAnchorEl} open={Boolean(profileAnchorEl)} onClose={handleProfileClose}>
+                <MenuItem component={Link} to="/profile" onClick={handleProfileClose}>My Profile</MenuItem>
+                <MenuItem onClick={() => { handleProfileClose(); logout(); }}>Logout</MenuItem>
+              </Menu>
+            </>
           ) : (
             <>
               <Button color="inherit" component={Link} to="/login" sx={{ fontWeight: "bold" }}>Login</Button>
@@ -40,19 +72,23 @@ const Navbar = () => {
           )}
         </Box>
 
-        {/* ✅ Mobile Menu Button: Visible only on small screens */}
+        {/* ✅ Mobile Menu Button (Visible on xs only) */}
         <IconButton edge="end" color="inherit" aria-label="menu" onClick={handleMenuOpen} sx={{ display: { xs: "block", md: "none" } }}>
           <MenuIcon />
         </IconButton>
 
-        {/* Mobile Dropdown Menu */}
+        {/* ✅ Mobile Dropdown Menu */}
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <MenuItem component={Link} to="/" onClick={handleMenuClose}>Home</MenuItem>
           <MenuItem component={Link} to="/donate" onClick={handleMenuClose}>Donate</MenuItem>
-          <MenuItem component={Link} to="/about" onClick={handleMenuClose}>About</MenuItem>
           <MenuItem component={Link} to="/tree-tracker" onClick={handleMenuClose}>Tree Tracker</MenuItem>
+          <MenuItem component={Link} to="/about" onClick={handleMenuClose}>About Us</MenuItem>
+
           {user ? (
-            <MenuItem onClick={() => { handleMenuClose(); logout(); }}>Logout</MenuItem>
+            <>
+              <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>My Profile</MenuItem>
+              <MenuItem onClick={() => { handleMenuClose(); logout(); }}>Logout</MenuItem>
+            </>
           ) : (
             <>
               <MenuItem component={Link} to="/login" onClick={handleMenuClose}>Login</MenuItem>

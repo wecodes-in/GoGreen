@@ -47,10 +47,10 @@ const About = () => {
         </Typography>
         <Grid container spacing={4} sx={{ mt: 4, textAlign: "center" }}>
           {[
-            { label: "Trees Planted", value: 50000 },
-            { label: "Donors Contributed", value: 1200 },
-            { label: "Regions Covered", value: 25 },
-            { label: "Years of Work", value: 5 },
+            { label: "Trees Planted", value: 2 },
+            { label: "Donors Contributed", value: 100 },
+            { label: "Regions Covered", value: 1 },
+            { label: "Years of Work", value: 0 },
           ].map((item, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Card elevation={4} sx={{ p: 3, borderRadius: 3, backgroundColor: "#E8F5E9" }}>
@@ -88,7 +88,7 @@ const About = () => {
         </Box>
 
    {/* 🌿 Meet Our Team */}
-<Box sx={{ mt: 6, textAlign: "center" }}>
+{/* <Box sx={{ mt: 6, textAlign: "center" }}>
   <Typography variant="h3" fontWeight="bold" sx={{ color: "#6D4C41" }}>
     Meet Our Team
   </Typography>
@@ -121,7 +121,7 @@ const About = () => {
       </Grid>
     ))}
   </Grid>
-</Box>
+</Box> */}
 
         {/* 🌿 Call to Action */}
         <Box sx={{ textAlign: "center", mt: 6, mb: 6 }}>

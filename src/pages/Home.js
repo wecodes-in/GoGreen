@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -16,16 +17,29 @@ import "slick-carousel/slick/slick-theme.css";
 import CountUp from "react-countup";
 
 const Home = () => {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const [totalTrees, setTotalTrees] = useState(0);
   const [totalDonation, setTotalDonation] = useState(0);
   const [amountUsed, setAmountUsed] = useState(0);
   const [remainingAmount, setRemainingAmount] = useState(0);
 
   useEffect(() => {
-    setTotalTrees(500);
-    setTotalDonation(10000);
-    setAmountUsed(7000);
-    setRemainingAmount(3000);
+    const fetchDonationStats = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/donations/donation-stats`);
+        const { totalTrees, totalDonation, amountUsed, remainingAmount } = response.data;
+
+        setTotalTrees(totalTrees);
+        setTotalDonation(totalDonation);
+        setAmountUsed(amountUsed);
+        setRemainingAmount(remainingAmount);
+      } catch (error) {
+        console.error("Error fetching donation stats:", error);
+      }
+    };
+
+    fetchDonationStats();
   }, []);
 
   const images = [
