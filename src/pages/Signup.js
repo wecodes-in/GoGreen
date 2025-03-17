@@ -52,7 +52,7 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(
+     await axios.post(
         `${BASE_URL}/auth/register`,
         {
           name: formData.username,
@@ -65,11 +65,7 @@ const Signup = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-     // Cookies.set("authToken", response.data.token, { expires: 7 });
 
-           // const userId = response.data.userId;
-      
-            //localStorage.setItem("userId", userId); // Store userId only at login
       login({ email: formData.email });
 
       setSnackbar({ open: true, message: "Signup successful! Redirecting...", severity: "success" });

@@ -9,21 +9,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button,
   Snackbar,
   Alert,
   CircularProgress,
   Chip
 } from "@mui/material";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const MyProfile = () => {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
   const [profile, setProfile] = useState(null);
   const [donations, setDonations] = useState([]);
@@ -68,14 +63,6 @@ const MyProfile = () => {
   };
   
 
-  const handleLogout = () => {
-    logout();
-    Cookies.remove("authToken");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userName");
-
-    navigate("/login");
-  };
 
   const getStatusColor = (status) => {
     switch (status) {
