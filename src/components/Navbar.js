@@ -53,6 +53,12 @@ const Navbar = () => {
             About Us
           </Button>
 
+  {/* ✅ Show "Admin Panel" only for Admins */}
+  {user?.email === "admin@gmail.com" && (
+            <Button color="warning" component={Link} to="/admin" sx={{ fontWeight: "bold", backgroundColor: "#FF9800" }}>
+              Admin Panel
+            </Button>
+          )}
           {user ? (
             <>
               {/* Profile Icon */}
@@ -83,6 +89,13 @@ const Navbar = () => {
           <MenuItem component={Link} to="/donate" onClick={handleMenuClose}>Donate</MenuItem>
           <MenuItem component={Link} to="/tree-tracker" onClick={handleMenuClose}>Tree Tracker</MenuItem>
           <MenuItem component={Link} to="/about" onClick={handleMenuClose}>About Us</MenuItem>
+
+
+
+
+{user?.email === "admin@gmail.com" && (
+            <MenuItem component={Link} to="/admin" onClick={handleMenuClose} sx={{ color: "orange" }}>Admin Panel</MenuItem>
+          )}
 
           {user ? (
             <>

@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import About from "./pages/About";
 import ForgotPassword from "./pages/ForgotPassword";
 import MyProfile from "./components/MyProfile";
+import AdminPanel from "./pages/AdminPanel";
 
 const App = () => {
   const { user } = useAuth();
@@ -25,6 +26,8 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
+        <Route path="/admin" element={user?.email === "admin@gmail.com" ? <AdminPanel /> : <Navigate to="/" />} />
+
         <Route path="*" element={<Navigate to="/" replace />} /> 
       </Routes>
     </Router>
