@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -9,9 +9,38 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CountUp from "react-countup";
+import axios from "axios";
 
 
 const About = () => {
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  const [totalTrees, setTotalTrees] = useState(0);
+  const [totalDonation, setTotalDonation] = useState(0);
+  // const [amountUsed, setAmountUsed] = useState(0);
+  // const [remainingAmount, setRemainingAmount] = useState(0);
+  // const [pendingDonations, setPendingDonations] = useState({ count: 0, amount: 0 }); // ✅ New state
+
+  useEffect(() => {
+    const fetchDonationStats = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/donations/summary`);
+        const { treesPlanted, totalAmount, amountUsed, remainingAmount,pendingDonations } = response.data;
+
+        setTotalTrees(treesPlanted);
+        setTotalDonation(totalAmount);
+        // setAmountUsed(amountUsed);
+        // setRemainingAmount(remainingAmount);
+        // setPendingDonations(pendingDonations); // ✅ Store pending donations
+
+      } catch (error) {
+        console.error("Error fetching donation stats:", error);
+      }
+    };
+
+    fetchDonationStats();
+  }, []);
+
   return (
     <>
       {/* 🌿 Hero Section */}
@@ -46,8 +75,8 @@ const About = () => {
         </Typography>
         <Grid container spacing={4} sx={{ mt: 4, textAlign: "center" }}>
           {[
-            { label: "Trees Planted", value: 2 },
-            { label: "Donors Contributed", value: 100 },
+            { label: "Trees Planted", value: totalTrees },
+            { label: "Donors Contributed", value: totalDonation },
             { label: "Regions Covered", value: 1 },
             { label: "Years of Work", value: 0 },
           ].map((item, index) => (

@@ -23,17 +23,20 @@ const Home = () => {
   const [totalDonation, setTotalDonation] = useState(0);
   const [amountUsed, setAmountUsed] = useState(0);
   const [remainingAmount, setRemainingAmount] = useState(0);
+  const [pendingDonations, setPendingDonations] = useState({ count: 0, amount: 0 }); // ✅ New state
 
   useEffect(() => {
     const fetchDonationStats = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/donations/donation-stats`);
-        const { totalTrees, totalDonation, amountUsed, remainingAmount } = response.data;
+        const response = await axios.get(`${BASE_URL}/donations/summary`);
+        const { treesPlanted, totalAmount, amountUsed, remainingAmount,pendingDonations } = response.data;
 
-        setTotalTrees(totalTrees);
-        setTotalDonation(totalDonation);
+        setTotalTrees(treesPlanted);
+        setTotalDonation(totalAmount);
         setAmountUsed(amountUsed);
         setRemainingAmount(remainingAmount);
+        setPendingDonations(pendingDonations); // ✅ Store pending donations
+
       } catch (error) {
         console.error("Error fetching donation stats:", error);
       }
@@ -153,9 +156,12 @@ const Home = () => {
         <Grid container spacing={3} sx={{ mt: 4, justifyContent: "center" }}>
           {[
             { label: "Total Trees Planted", value: totalTrees },
-            { label: "Total Donation", value: totalDonation, prefix: "₹" },
+            { label: "Total Approved Donation", value: totalDonation, prefix: "₹" },
             { label: "Amount Used", value: amountUsed, prefix: "₹" },
-            { label: "Remaining Amount", value: remainingAmount, prefix: "₹" },
+            { label: "Remaining Approved Amount", value: remainingAmount, prefix: "₹" },
+            { label: "Pending Donations Count", value: pendingDonations.count }, // ✅ New card
+            { label: "Pending Donations Amount", value: pendingDonations.amount, prefix: "₹" }, // ✅ New card
+       
           ].map((item, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Card

@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+        const token = Cookies.get("authToken");
+
 
   // Open Menu
   const handleMenuOpen = (event) => {
@@ -29,7 +32,7 @@ const Navbar = () => {
   const handleProfileClose = () => {
     setProfileAnchorEl(null);
   };
-
+  
   return (
     <AppBar position="static" sx={{ backgroundColor: "#2E7D32", padding: "5px 0" }}>
       <Toolbar>
@@ -59,7 +62,7 @@ const Navbar = () => {
               Admin Panel
             </Button>
           )}
-          {user ? (
+          {user &&token!="undefined" && token!=undefined  ? (
             <>
               {/* Profile Icon */}
               <IconButton color="inherit" onClick={handleProfileOpen}>
@@ -97,7 +100,7 @@ const Navbar = () => {
             <MenuItem component={Link} to="/admin" onClick={handleMenuClose} sx={{ color: "orange" }}>Admin Panel</MenuItem>
           )}
 
-          {user ? (
+          {user &&token!="undefined" && token!=undefined  ? (
             <>
               <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>My Profile</MenuItem>
               <MenuItem onClick={() => { handleMenuClose(); logout(); }}>Logout</MenuItem>

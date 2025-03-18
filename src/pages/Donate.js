@@ -56,7 +56,7 @@ const Donate = () => {
         paymentMode: "UPI",
         donorType,
         transactionId,
-        message: "Donation for a good cause",
+        amountUsed: "No",
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -120,11 +120,11 @@ const Login = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sx={{ textAlign: "right" }}>
+            {/* <Grid item xs={12} sx={{ textAlign: "right" }}>
               <Typography variant="body2" sx={{ color: "primary.main", cursor: "pointer" }} onClick={() => navigate("/forgot-password")}>
                 Forgot Password?
               </Typography>
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Button
                 type="submit"
